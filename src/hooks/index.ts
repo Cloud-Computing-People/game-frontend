@@ -21,7 +21,7 @@ export function useCountdown(
         return () => {
             clearInterval(interval);
         };
-    }, []);
+    }, [onFinish]);
 
     return {
         countdown: countdown,

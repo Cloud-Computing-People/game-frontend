@@ -1,19 +1,32 @@
+import { useState, useEffect } from "react";
 import Link from "../../components/link";
 import ShopItem from "./components/shop-item";
-
-const items = [
-    {
-        id: 1,
-        name: "Sword",
-        price: 300,
-        imgURL: "",
-        availableFrom: new Date(),
-        availableTo: new Date(),
-        transferable: true,
-    },
-];
+import { Item } from "../../types/marketplace";
 
 export default function Page() {
+    const [items, setItems] = useState<Item[]>([]);
+
+    useEffect(() => {
+        async function getItems() {
+            const userId = "2";
+            const marketplaceApi = import.meta.env.VITE_MARKETPLACE_API;
+            const res = await fetch(
+                `${marketplaceApi}/marketplace/items?user_id=${userId}`
+            );
+            if (!res.ok) throw new Error(await res.json());
+
+            const items = await res.json();
+
+            // @ts-expect-error We don't have a DTO type for what comes back from DB yet
+            const mappedItems = items.data.map((item) => ({
+                ...item,
+                transferable: item.transferable === 1,
+            }));
+            setItems(mappedItems);
+        }
+        getItems();
+    }, []);
+
     return (
         <div className="min-h-screen flex justify-center">
             <div className="mt-8 flex items-center flex-col gap-6">
