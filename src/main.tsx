@@ -5,6 +5,7 @@ import HomePage from "./pages/home/page";
 import ShopPage from "./pages/shop/page";
 import ProfilePage from "./pages/profile/page";
 import GamePage from "./pages/game/page";
+import LoginPage from "./pages/login/page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
 
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
     {
         path: "/game",
         element: <GamePage />,
+    },
+    {
+        path: "/login",
+        element: <LoginPage />,
     },
 ]);
 

@@ -4,9 +4,22 @@ import { User } from "../../types/user";
 
 export default function Page() {
     const [user, setUser] = useState<User | null>(null);
-    const [userItems, setUserItems] = useState(null);
+    const [userItems, setUserItems] = useState<any[]>([]);
     useEffect(() => {
-        const user_id = "2";
+        // const user_id = "2";
+        const username = "ak4973"; // Replace with the actual username
+
+        async function getUserIdByUsername(username: string) {
+            const userApi = import.meta.env.VITE_USER_API;
+            const res = await fetch(`${userApi}/users?username=${username}`);
+            if (!res.ok) throw new Error(JSON.stringify(res));
+
+            const data = await res.json();
+            return data.data[0].id; // Assuming the API returns an array of users
+        }
+
+        var user_id = getUserIdByUsername(username);
+        user_id.then((id) => console.log(id));
 
         async function getUser() {
             const userApi = import.meta.env.VITE_USER_API;
