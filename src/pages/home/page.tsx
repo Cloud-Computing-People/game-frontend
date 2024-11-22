@@ -5,7 +5,7 @@ export default function Page() {
         <div className="min-h-screen flex items-center justify-center">
             <div className="flex flex-col gap-3">
                 <div>
-                    <h1 className="text-xl font-bold">The Microservice Game</h1>
+                    <h1 className="text-xl font-bold">Eisley XChange</h1>
                 </div>
                 <div className="text-sm">
                     Created by <span className="text-red-500">the CCP</span>{" "}

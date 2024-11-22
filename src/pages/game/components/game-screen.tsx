@@ -34,7 +34,6 @@ export default function GameScreen() {
     const { countdown, endCountdown, completed } = useCountdown(5, {
         onFinish: () => {
             saveGame({
-                id: 0,
                 userId: 2,
                 score: 100,
                 acquiredCurrency: 5.0,

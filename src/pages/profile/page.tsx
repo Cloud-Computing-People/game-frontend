@@ -4,7 +4,7 @@ import { User } from "../../types/user";
 
 export default function Page() {
     const [user, setUser] = useState<User | null>(null);
-    const [userItems, setUserItems] = useState(null);
+    const [userItems, setUserItems] = useState<any[]>([]);
     useEffect(() => {
         const user_id = "2";
 
