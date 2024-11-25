@@ -19,6 +19,12 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Create .env file
+        run: |
+          echo "VITE_GAMES_API=${{ secrets.VITE_GAMES_API }}" >> .env
+          echo "VITE_USER_API=${{ secrets.VITE_USER_API }}" >> .env
+          echo "VITE_MARKETPLACE_API=${{ secrets.VITE_MARKETPLACE_API }}" >> .env
+
       - name: Install dependencies
         run: npm install
 
