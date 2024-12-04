@@ -1,43 +1,34 @@
 import { useEffect, useState } from "react";
 import Link from "../../components/link";
 import { User } from "../../types/user";
+import { useQuery } from "@tanstack/react-query";
+import { getUser, getUserItems } from "../../api";
 
 export default function Page() {
-    const [user, setUser] = useState<User | null>(null);
-    const [userItems, setUserItems] = useState(null);
-    useEffect(() => {
-        const user_id = "2";
+    const profileRes = useQuery({
+        queryKey: ["profile"],
+        queryFn: getUser,
+    });
 
-        async function getUser() {
-            const userApi = import.meta.env.VITE_USER_API;
-            const res = await fetch(`${userApi}/users/${user_id}`);
-            if (!res.ok) throw new Error(JSON.stringify(res));
+    const itemsRes = useQuery({
+        queryKey: ["items"],
+        queryFn: getUserItems,
+    });
 
-            const user = await res.json();
-            setUser(user.data);
-        }
+    if (profileRes.isPending || itemsRes.isPending) {
+        return "LOADING";
+    }
 
-        async function getUserItems() {
-            const marketplaceApi = import.meta.env.VITE_MARKETPLACE_API;
-            const res = await fetch(
-                `${marketplaceApi}/marketplace/${user_id}/items`
-            );
-            if (!res.ok) throw new Error(await res.json());
+    if (profileRes.isError || itemsRes.isError) {
+        return (
+            <>
+                <p>{JSON.stringify(profileRes.error, null, 2)}</p>
+                <p>{JSON.stringify(itemsRes.error, null, 2)}</p>
+            </>
+        );
+    }
 
-            const items = await res.json();
-
-            // @ts-expect-error We don't have a DTO type for what comes back from DB yet
-            const mappedItems = items.data.data.map((item) => ({
-                ...item,
-                transferable: item.transferable === 1,
-            }));
-            setUserItems(mappedItems);
-        }
-
-        getUserItems();
-        getUser();
-    }, []);
-
+    console.log(itemsRes.data);
     return (
         <div className="min-h-screen flex justify-center">
             <div className="mt-8 flex items-center flex-col gap-6">
@@ -49,18 +40,21 @@ export default function Page() {
                     <div className="space-y-6">
                         <div className="text-center">
                             <p className="text-muted-foreground">Username</p>
-                            <h5 className="font-bold">{user?.username}</h5>
+                            <h5 className="font-bold">
+                                {profileRes.data?.username}
+                            </h5>
                         </div>
                         <div className="text-center">
                             <p className="text-muted-foreground">Email</p>
-                            <h5 className="font-bold">{user?.email}</h5>
+                            <h5 className="font-bold">
+                                {profileRes.data?.email}
+                            </h5>
                         </div>
                         <div className="text-center">
                             <p className="text-muted-foreground">Your Items</p>
-                            {userItems &&
-                                userItems.map((item) => {
-                                    return <p>{item.name}</p>;
-                                })}
+                            {itemsRes.data.map((item) => {
+                                return <p>{item.name}</p>;
+                            })}
                         </div>
                     </div>
                 </div>

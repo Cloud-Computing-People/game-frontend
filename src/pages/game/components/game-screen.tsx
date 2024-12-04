@@ -1,62 +1,58 @@
 // We can implement a super basic game with DOM
 // But ideally replace this with a canvas element
 
-// import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCountdown } from "../../../hooks";
 import { useNavigate } from "react-router";
-import { Game } from "../../../types/game";
-
-async function saveGame(gameData: Game) {
-    console.log("MAKING API REQUEST TO: gameservice");
-    const gamesApi = import.meta.env.VITE_GAMES_API;
-    const res = await fetch(`${gamesApi}/games`, {
-        method: "POST",
-        body: JSON.stringify(gameData),
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-    return await res.json();
-}
+import { saveGame } from "../../../api";
 
 export default function GameScreen() {
-    // const queryClient = useQueryClient();
-    // const mutation = useMutation({
-    //     mutationFn: saveGame,
-    //     onSuccess: () => {
-    //         // Invalidate and refetch
-    //         queryClient.invalidateQueries({
-    //             queryKey: ["profile", "leaderboard"],
-    //         });
-    //     },
-    // });
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation({
+        mutationFn: saveGame,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["profile"],
+            });
+        },
+        onError: (error) => {
+            console.error(error);
+        },
+    });
     const navigate = useNavigate();
-    const { countdown, endCountdown, completed } = useCountdown(5, {
+    const { countdown, endCountdown } = useCountdown(5, {
         onFinish: () => {
-            saveGame({
+            mutation.mutate({
                 id: 0,
-                userId: 2,
                 score: 100,
                 acquiredCurrency: 5.0,
-                timeStamp: "2024-09-27T00:00:00",
+                timeStamp: new Date().toISOString().split(".")[0],
             });
-            // console.log("THIS KEEPS RUNNING");
-            // mutation.mutate({
-            //     userId: 1,
-            //     score: 100,
-            //     acquiredCurrency: 200,
-            //     timeStamp: "2024-10-02 10:18:28",
-            // });
         },
     });
 
-    // if (mutation.isError) {
-    //     return "LOADING";
-    // }
+    if (mutation.isError) {
+        return (
+            <div className="flex flex-col item-center gap-6">
+                <p>Something went wrong!</p>
+                <button
+                    onClick={() => navigate(0)}
+                    className="border-2 bg-green-500 px-2 py-1 text-white"
+                >
+                    Retry
+                </button>
+            </div>
+        );
+    }
+
+    if (mutation.isPending) {
+        return "LOADING";
+    }
 
     return (
-        <div className="bg-slate-100 min-h-[500px] min-w-[500px] flex items-center justify-center">
-            {completed ? (
+        <>
+            {mutation.isSuccess ? (
                 <div className="flex p-8 flex-col items-center gap-6">
                     <h3 className="text-lg font-semibold">
                         Thank you for playing!
@@ -84,6 +80,6 @@ export default function GameScreen() {
                     </button>
                 </div>
             )}
-        </div>
+        </>
     );
 }

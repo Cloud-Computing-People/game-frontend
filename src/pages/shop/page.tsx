@@ -2,34 +2,26 @@ import { useState, useEffect } from "react";
 import Link from "../../components/link";
 import ShopItem from "./components/shop-item";
 import { Item } from "../../types/marketplace";
+import { getShopItems } from "../../api";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Page() {
-    const [items, setItems] = useState<Item[]>([]);
+    const shopItemsRes = useQuery({
+        queryKey: ["shop"],
+        queryFn: getShopItems,
+    });
 
-    useEffect(() => {
-        async function getItems() {
-            const userId = "2";
-            const marketplaceApi = import.meta.env.VITE_MARKETPLACE_API;
-            const res = await fetch(
-                `${marketplaceApi}/marketplace/items?user_id=${userId}`
-            );
-            if (!res.ok) throw new Error(await res.json());
+    if (shopItemsRes.isPending) {
+        return "LOADING";
+    }
 
-            const items = await res.json();
-
-            // @ts-expect-error We don't have a DTO type for what comes back from DB yet
-            const mappedItems = items.data.map((item) => ({
-                ...item,
-                transferable: item.transferable === 1,
-            }));
-            setItems(mappedItems);
-        }
-        getItems();
-    }, []);
+    if (shopItemsRes.isError) {
+        return JSON.stringify(shopItemsRes.error, null, 2);
+    }
 
     return (
         <div className="min-h-screen flex justify-center">
-            <div className="mt-8 flex items-center flex-col gap-6">
+            <div className="mt-8 mb-8 flex items-center flex-col gap-6">
                 <div>
                     <Link to={`/`}>Back to home</Link>
                 </div>
@@ -38,12 +30,11 @@ export default function Page() {
                         Welcome to the Cosmetics Shop!
                     </h3>
                     <div className="grid grid-cols-3 gap-3">
-                        {items.map((item) => (
+                        {shopItemsRes.data.map((item) => (
                             <ShopItem item={item} key={item.id} />
                         ))}
                     </div>
                 </div>
-                {/* <GameScreen /> */}
             </div>
         </div>
     );

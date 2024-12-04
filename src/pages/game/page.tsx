@@ -8,7 +8,9 @@ export default function Page() {
                 <div>
                     <Link to={`/`}>Back to home</Link>
                 </div>
-                <GameScreen />
+                <div className="bg-slate-100 min-h-[500px] min-w-[500px] flex items-center justify-center">
+                    <GameScreen />
+                </div>
             </div>
         </div>
     );
