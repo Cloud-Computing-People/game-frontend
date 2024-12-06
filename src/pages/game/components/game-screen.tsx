@@ -24,7 +24,6 @@ export default function GameScreen() {
     const { countdown, endCountdown } = useCountdown(5, {
         onFinish: () => {
             mutation.mutate({
-                id: 0,
                 score: 100,
                 acquiredCurrency: 5.0,
                 timeStamp: new Date().toISOString().split(".")[0],

@@ -1,7 +1,5 @@
-import { useState, useEffect } from "react";
 import Link from "../../components/link";
 import ShopItem from "./components/shop-item";
-import { Item } from "../../types/marketplace";
 import { getShopItems } from "../../api";
 import { useQuery } from "@tanstack/react-query";
 

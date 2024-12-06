@@ -2,12 +2,11 @@ import { Game } from "../types/game";
 import { getUserFromSession } from "../util/get-user";
 
 export async function saveGame(gameData: Game) {
-    console.log("MAKING API REQUEST TO: gameservice");
-    const gamesApi = import.meta.env.VITE_GAMES_API;
+    const marketplaceApi = import.meta.env.VITE_MARKETPLACE_API;
     const user = await getUser();
 
-    const body = { ...gameData, user_id: user.id };
-    const res = await fetch(`${gamesApi}/games`, {
+    const body = { ...gameData, userId: user.id };
+    const res = await fetch(`${marketplaceApi}/marketplace/end_game`, {
         method: "POST",
         body: JSON.stringify(body),
         headers: {
@@ -57,10 +56,38 @@ export async function getUser() {
     });
     if (!res.ok) throw { error: await res.json() };
 
-    const user = await res.json();
-    // return user;
-    return { id: 2 };
+    const users = await res.json();
+    const user = users.data.find((u) => u.email === email);
+    console.log(user);
+    if (!user) {
+        throw {
+            error: "Your profile has not been created. Please reach out to CCP.",
+        };
+    }
+    return user;
 }
+
+// export async function createUser() {
+//     const userApi = import.meta.env.VITE_USER_API;
+//     // @ts-expect-error: Email should exist on the token
+//     const { email } = getUserFromSession();
+
+//     const body = {
+//         username: "totally-not-darth-vader",
+//         email: email,
+//         isAdmin: false,
+//     };
+//     const res = await fetch(`${userApi}/users`, {
+//         method: "POST",
+//         body: JSON.stringify(body),
+//         headers: {
+//             "Content-Type": "application/json",
+//         },
+//         signal: AbortSignal.timeout(5000),
+//     });
+
+//     if (!res.ok) throw { error: await res.json() };
+// }
 
 export async function getUserItems() {
     const user = await getUser();

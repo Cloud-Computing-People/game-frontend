@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
 import Link from "../../components/link";
-import { User } from "../../types/user";
 import { useQuery } from "@tanstack/react-query";
 import { getUser, getUserItems } from "../../api";
 
