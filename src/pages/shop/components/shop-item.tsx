@@ -11,11 +11,13 @@ export default function ShopItem({ item }: { item: Item }) {
             Promise.all([
                 queryClient.invalidateQueries({ queryKey: ["items"] }),
                 queryClient.invalidateQueries({ queryKey: ["shop"] }),
+                queryClient.invalidateQueries({ queryKey: ["bank"] }),
             ]);
         },
         onError: (error) => {
             console.error(error);
         },
+        retry: false,
     });
 
     return (

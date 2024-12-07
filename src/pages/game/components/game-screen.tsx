@@ -13,12 +13,13 @@ export default function GameScreen() {
         mutationFn: saveGame,
         onSuccess: () => {
             queryClient.invalidateQueries({
-                queryKey: ["profile"],
+                queryKey: ["bank"],
             });
         },
         onError: (error) => {
             console.error(error);
         },
+        retry: false,
     });
     const navigate = useNavigate();
     const { countdown, endCountdown } = useCountdown(5, {

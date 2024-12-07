@@ -6,11 +6,13 @@ export default function Page() {
     const profileRes = useQuery({
         queryKey: ["profile"],
         queryFn: getUser,
+        retry: false,
     });
 
     const itemsRes = useQuery({
         queryKey: ["items"],
         queryFn: getUserItems,
+        retry: false,
     });
 
     if (profileRes.isPending || itemsRes.isPending) {
@@ -51,7 +53,7 @@ export default function Page() {
                         <div className="text-center">
                             <p className="text-muted-foreground">Your Items</p>
                             {itemsRes.data.map((item) => {
-                                return <p>{item.name}</p>;
+                                return <p key={item.id}>{item.name}</p>;
                             })}
                         </div>
                     </div>

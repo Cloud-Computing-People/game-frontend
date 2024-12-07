@@ -7,6 +7,7 @@ export default function Page() {
     const shopItemsRes = useQuery({
         queryKey: ["shop"],
         queryFn: getShopItems,
+        retry: false,
     });
 
     if (shopItemsRes.isPending) {
@@ -32,6 +33,9 @@ export default function Page() {
                             <ShopItem item={item} key={item.id} />
                         ))}
                     </div>
+                    {shopItemsRes.data.length === 0 && (
+                        <p>Make more money to buy items in the shop!</p>
+                    )}
                 </div>
             </div>
         </div>
