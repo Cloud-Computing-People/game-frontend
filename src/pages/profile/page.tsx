@@ -28,7 +28,6 @@ export default function Page() {
         );
     }
 
-    console.log(itemsRes.data);
     return (
         <div className="min-h-screen flex justify-center">
             <div className="mt-8 flex items-center flex-col gap-6">

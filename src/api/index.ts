@@ -86,7 +86,6 @@ export async function getUser() {
 
     const users = await res.json();
     const user = users.data.find((u) => u.email === email);
-    console.log(user);
     if (!user) {
         throw {
             error: "Your profile has not been created. Please reach out to CCP.",

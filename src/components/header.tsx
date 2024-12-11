@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { getUserFromSession } from "../util/get-user";
 import { googleLogout } from "@react-oauth/google";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { getUserBalance } from "../api";
 
 export default function Header() {
@@ -52,6 +52,7 @@ function UserBalance() {
     if (!balance) {
         return null;
     }
+
     return (
         <span className="text-sm ml-3 font-bold text-indigo-900">
             Balance: ${balance}

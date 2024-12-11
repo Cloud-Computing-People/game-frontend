@@ -58,7 +58,7 @@ export default function GameScreen() {
                         Thank you for playing!
                     </h3>
                     <p>Your score was: 100</p>
-                    <p>You earned: $5</p>
+                    <p>You earned: $10</p>
                     <button
                         onClick={() => navigate(0)}
                         className="border-2 bg-green-500 px-2 py-1 text-white"
